@@ -1,15 +1,17 @@
 <?php
+
+namespace SilverStripe\Importer;
+
 use SilverStripe\CMS\Controllers\ContentController;
 use SilverStripe\Core\Convert;
 use SilverStripe\Security\Permission;
-use SilverStripe\Security\PermissionProvider;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FileField;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\FormAction;
+use SilverStripe\Security\Security;
 use SilverStripe\Versioned\Versioned;
-use SilverStripe\Dev\Debug;
 
 /**
  * Generate or update pages in the site-tree from a tab indented text file.
@@ -19,6 +21,11 @@ use SilverStripe\Dev\Debug;
  */
 class SiteTreeImporter extends ContentController
 {
+    public function Link($action = null)
+    {
+		return '/SiteTreeImporter';
+	}
+
     private static $allowed_actions = array(
         'Form',
         'bulkimport',
@@ -67,7 +74,7 @@ HTML;
 
     public function Form()
     {
-        return new Form($this, "Form", new FieldList(
+        return new Form($this, __FUNCTION__, new FieldList(
             new FileField("SourceFile", "Tab-delimited file"),
             new CheckboxField("DeleteExisting", "Clear out all existing content?"),
             new CheckboxField("PublishAll", "Publish everything after the import?")
@@ -83,7 +90,7 @@ HTML;
         Versioned::set_stage('Stage');
 
         if (isset($data['DeleteExisting']) && $data['DeleteExisting']) {
-            foreach (Page::get() as $page) {
+            foreach (\Page::get() as $page) {
                 $page->deleteFromStage('Stage');
                 $page->deleteFromStage('Live');
             }
@@ -118,7 +125,7 @@ HTML;
                 $parentID = ($numTabs > 0) ? $parentRefs[$numTabs-1] : 0;
 
                 // Try to find an existing page, or create a new one
-                $page = Page::get()->filter(array(
+                $page = \Page::get()->filter(array(
                     'URLSegment' => $url,
                     'ParentID' => $parentID
                 ))->First();
