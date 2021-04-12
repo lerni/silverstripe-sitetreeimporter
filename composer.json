@@ -1,7 +1,7 @@
 {
 	"name": "silverstripe/sitetreeimporter",
 	"description": "Imports indented plaintext files into a SilverStripe sitetree",
-	"type": "silverstripe-module",
+	"type": "silverstripe-vendormodule",
 	"keywords": ["silverstripe", "import"],
 	"authors": [
 		{
@@ -11,7 +11,6 @@
 	],
 	"require":
 	{
-		"silverstripe/framework": "^3.1",
-		"silverstripe/cms": "^3.1"
+		"silverstripe/cms": "^4"
 	}
 }
